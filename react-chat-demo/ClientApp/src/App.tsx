@@ -6,6 +6,7 @@ import Header from "./Header";
 import MessageForm from "./MessageForm";
 import MessageList from "./MessageList";
 import ErrorBox from "./ErrorBox";
+import Footer from "./Footer";
 
 type State = {
     isLoading: boolean;
@@ -32,10 +33,6 @@ export default class App extends Component<{}, State> {
         };
     }
 
-    clearMessages() {
-        this.setState({ messages: [] });
-    }
-
     componentDidMount() {
         const connection = new SignalR.HubConnectionBuilder().withUrl("/hubs/chat").build();
         connection.start().catch(err => {
@@ -46,14 +43,20 @@ export default class App extends Component<{}, State> {
         this.setState({ connection: connection });
     }
 
+    clearMessages() {
+        this.setState({ messages: [] });
+    }
+
     postMessage(user: string, msg: string): void {
         let { connection } = this.state;
-        if (connection) {
+        if (connection && connection.state === SignalR.HubConnectionState.Connected) {
             this.setState({ isLoading: true, error: false });
             connection
                 .send("postMessage", user, msg)
                 .then(() => this.setState({ isLoading: false }))
                 .catch(() => this.setState({ isLoading: false, error: true }));
+        } else {
+            this.setState({ error: true });
         }
     }
 
@@ -77,6 +80,8 @@ export default class App extends Component<{}, State> {
                 />
 
                 <MessageList messages={messages} />
+
+                <Footer />
             </div>
         );
     }

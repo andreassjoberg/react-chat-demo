@@ -50,11 +50,13 @@ export default class MessageForm extends Component<Props> {
                                     ref={ref => (this.inputMessage = ref)}
                                 />
                             </div>
-                            <div className="col-md-4 mb-3">
+                            <div className="col-md-2 mb-3">
                                 <button type="submit" className="btn btn-primary">
                                     Submit
                                 </button>
-                                <button type="button" className="btn btn-danger ml-3" onClick={() => clearMessages()}>
+                            </div>
+                            <div className="col-md-2 mb-3">
+                                <button type="button" className="btn btn-danger" onClick={() => clearMessages()}>
                                     Clear
                                 </button>
                             </div>
