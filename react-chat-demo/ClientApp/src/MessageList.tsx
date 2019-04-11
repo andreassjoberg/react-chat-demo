@@ -15,7 +15,7 @@ export default class MessageList extends Component<Props> {
                     <h4 className="mb-3">Messages</h4>
                     {messages.length > 0 ? (
                         messages.map(msg => (
-                            <div key={`${msg.user}-${msg.message}`} className="card mb-1">
+                            <div key={msg.id} className="card mb-1">
                                 <div className="card-body">
                                     <div className="card-title h5">{msg.user}</div>
                                     {msg.message}

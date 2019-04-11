@@ -15,6 +15,7 @@ type State = {
 };
 
 export interface Message {
+    id: string;
     user: string;
     message: string;
 }
@@ -35,36 +36,30 @@ export default class App extends Component<{}, State> {
         this.setState({ messages: [] });
     }
 
-    // componentDidMount() {
-    //     const connection = new SignalR.HubConnectionBuilder().withUrl("/hubs/chat").build();
-    //     connection.start().catch(err => {
-    //         this.setState({ error: true });
-    //         console.log(err);
-    //     });
-    //     connection.on("messagePosted", (user, msg) => this.messagePosted(user, msg));
-    //     this.setState({ connection: connection });
-    // }
+    componentDidMount() {
+        const connection = new SignalR.HubConnectionBuilder().withUrl("/hubs/chat").build();
+        connection.start().catch(err => {
+            this.setState({ error: true });
+            console.log(err);
+        });
+        connection.on("messagePosted", (id, user, msg) => this.messagePosted(id, user, msg));
+        this.setState({ connection: connection });
+    }
 
-    // postMessage(user: string, msg: string): void {
-    //     let { connection } = this.state;
-    //     if (connection) {
-    //         this.setState({ isLoading: true, error: false });
-    //         connection
-    //             .send("postMessage", user, msg)
-    //             .then(() => this.setState({ isLoading: false }))
-    //             .catch(() => this.setState({ isLoading: false, error: true }));
-    //     }
-    // }
+    postMessage(user: string, msg: string): void {
+        let { connection } = this.state;
+        if (connection) {
+            this.setState({ isLoading: true, error: false });
+            connection
+                .send("postMessage", user, msg)
+                .then(() => this.setState({ isLoading: false }))
+                .catch(() => this.setState({ isLoading: false, error: true }));
+        }
+    }
 
-    // messagePosted(user: string, msg: string): void {
-    //     let { messages } = this.state;
-    //     messages.unshift({ user, message: msg });
-    //     this.setState({ messages: messages });
-    // }
-
-    postMessage(user: string, message: string): void {
+    messagePosted(id: string, user: string, message: string): void {
         let { messages } = this.state;
-        messages.unshift({ user, message });
+        messages.unshift({ id, user, message });
         this.setState({ messages: messages });
     }
 

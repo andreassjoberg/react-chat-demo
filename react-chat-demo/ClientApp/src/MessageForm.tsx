@@ -12,9 +12,14 @@ export default class MessageForm extends Component<Props> {
     formSubmit(ev: React.FormEvent<HTMLFormElement>): void {
         ev.preventDefault();
         let { postMessage } = this.props;
-        if (this.inputUser && this.inputMessage && postMessage) {
-            postMessage(this.inputUser.value, this.inputMessage.value);
-            this.inputMessage.value = "";
+        let user = this.inputUser ? this.inputUser.value : null;
+        let message = this.inputMessage ? this.inputMessage.value : null;
+
+        if (postMessage && user && user.trim() && message && message.trim()) {
+            postMessage(user.trim(), message.trim());
+            if (this.inputMessage) {
+                this.inputMessage.value = "";
+            }
         }
     }
 
