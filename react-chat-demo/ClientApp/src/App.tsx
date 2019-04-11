@@ -31,30 +31,40 @@ export default class App extends Component<{}, State> {
         };
     }
 
-    componentDidMount() {
-        const connection = new SignalR.HubConnectionBuilder().withUrl("/hubs/chat").build();
-        connection.start().catch(err => {
-            this.setState({ error: true });
-            console.log(err);
-        });
-        connection.on("messagePosted", (user, msg) => this.messagePosted(user, msg));
-        this.setState({ connection: connection });
+    clearMessages() {
+        this.setState({ messages: [] });
     }
 
-    postMessage(user: string, msg: string): void {
-        let { connection } = this.state;
-        if (connection) {
-            this.setState({ isLoading: true, error: false });
-            connection
-                .send("postMessage", user, msg)
-                .then(() => this.setState({ isLoading: false }))
-                .catch(() => this.setState({ isLoading: false, error: true }));
-        }
-    }
+    // componentDidMount() {
+    //     const connection = new SignalR.HubConnectionBuilder().withUrl("/hubs/chat").build();
+    //     connection.start().catch(err => {
+    //         this.setState({ error: true });
+    //         console.log(err);
+    //     });
+    //     connection.on("messagePosted", (user, msg) => this.messagePosted(user, msg));
+    //     this.setState({ connection: connection });
+    // }
 
-    messagePosted(user: string, msg: string): void {
+    // postMessage(user: string, msg: string): void {
+    //     let { connection } = this.state;
+    //     if (connection) {
+    //         this.setState({ isLoading: true, error: false });
+    //         connection
+    //             .send("postMessage", user, msg)
+    //             .then(() => this.setState({ isLoading: false }))
+    //             .catch(() => this.setState({ isLoading: false, error: true }));
+    //     }
+    // }
+
+    // messagePosted(user: string, msg: string): void {
+    //     let { messages } = this.state;
+    //     messages.unshift({ user, message: msg });
+    //     this.setState({ messages: messages });
+    // }
+
+    postMessage(user: string, message: string): void {
         let { messages } = this.state;
-        messages.unshift({ user, message: msg });
+        messages.unshift({ user, message });
         this.setState({ messages: messages });
     }
 
@@ -66,7 +76,10 @@ export default class App extends Component<{}, State> {
 
                 {error ? <ErrorBox /> : null}
 
-                <MessageForm postMessage={(user, msg) => this.postMessage(user, msg)} />
+                <MessageForm
+                    postMessage={(user, msg) => this.postMessage(user, msg)}
+                    clearMessages={() => this.clearMessages()}
+                />
 
                 <MessageList messages={messages} />
             </div>
