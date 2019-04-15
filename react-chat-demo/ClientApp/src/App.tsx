@@ -33,31 +33,9 @@ export default class App extends Component<{}, State> {
         };
     }
 
-    componentDidMount() {
-        const connection = new SignalR.HubConnectionBuilder().withUrl("/hubs/chat").build();
-        connection.start().catch(err => {
-            this.setState({ error: true });
-            console.log(err);
-        });
-        connection.on("messagePosted", (id, user, msg) => this.messagePosted(id, user, msg));
-        this.setState({ connection: connection });
-    }
-
-    clearMessages() {
-        this.setState({ messages: [] });
-    }
-
     postMessage(user: string, msg: string): void {
-        let { connection } = this.state;
-        if (connection && connection.state === SignalR.HubConnectionState.Connected) {
-            this.setState({ isLoading: true, error: false });
-            connection
-                .send("postMessage", user, msg)
-                .then(() => this.setState({ isLoading: false }))
-                .catch(() => this.setState({ isLoading: false, error: true }));
-        } else {
-            this.setState({ error: true });
-        }
+        let id = new Date().valueOf();
+        this.messagePosted(id.toString(), user, msg);
     }
 
     messagePosted(id: string, user: string, message: string): void {
@@ -74,10 +52,7 @@ export default class App extends Component<{}, State> {
 
                 {error ? <ErrorBox /> : null}
 
-                <MessageForm
-                    postMessage={(user, msg) => this.postMessage(user, msg)}
-                    clearMessages={() => this.clearMessages()}
-                />
+                <MessageForm postMessage={(user, msg) => this.postMessage(user, msg)} />
 
                 <MessageList messages={messages} />
 

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 type Props = {
     postMessage(user: string, message: string): void;
-    clearMessages(): void;
 };
 
 export default class MessageForm extends Component<Props> {
@@ -24,8 +23,6 @@ export default class MessageForm extends Component<Props> {
     }
 
     render() {
-        let { clearMessages } = this.props;
-
         return (
             <div className="row">
                 <div className="col-md-8 order-md-1">
@@ -53,11 +50,6 @@ export default class MessageForm extends Component<Props> {
                             <div className="col-md-2 mb-3">
                                 <button type="submit" className="btn btn-primary">
                                     Submit
-                                </button>
-                            </div>
-                            <div className="col-md-2 mb-3">
-                                <button type="button" className="btn btn-danger" onClick={() => clearMessages()}>
-                                    Clear
                                 </button>
                             </div>
                         </div>
