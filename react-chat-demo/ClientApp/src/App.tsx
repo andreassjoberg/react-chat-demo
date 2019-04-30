@@ -7,6 +7,7 @@ import MessageForm from "./MessageForm";
 import MessageList from "./MessageList";
 import ErrorBox from "./ErrorBox";
 import Footer from "./Footer";
+import Loader from "./Loader";
 
 type State = {
     isLoading: boolean;
@@ -51,6 +52,8 @@ export default class App extends Component<{}, State> {
                 <Header />
 
                 {error ? <ErrorBox /> : null}
+
+                <Loader isLoading={isLoading} />
 
                 <MessageForm postMessage={(user, msg) => this.postMessage(user, msg)} />
 
